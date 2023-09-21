@@ -36,14 +36,14 @@ function excelFileToJSON(file) {
 
                         let obj = {
                             title: "",
+                            where: "",
+                            date: "",
+                            time: "",
+                            caption: "",
                             coords: {
                                 lat: 0,
                                 lng: 0,
                             },
-                            where: "",
-                            time: "",
-                            date: "",
-                            caption: "",
                         };
 
                         obj.title = title ?? "";
@@ -54,10 +54,8 @@ function excelFileToJSON(file) {
                             obj.coords.lng = c[1];
                         }
 
-                        console.log(r);
                         obj.where = where ?? "";
 
-                        console.log(r.date);
                         const date = new Date(r.date);
                         const d =
                             date.getDate() +
@@ -71,28 +69,17 @@ function excelFileToJSON(file) {
 
                         obj.caption = where + ", " + d + ", " + time;
 
-                        //if(location) {
-                        //    obj.location = location;
-                        //}else {
-                        //    delete obj.location
-                        //}
-
-                        //if(link) {
-                        //    obj.link = link
-                        //}else {
-                        //    delete obj.link
-                        //}
-                        //obj.caption = `${address || ''}<br/>${caption || ''}`;
-                        //obj.coords.lat = getRandomFloat(45.4500, 45.5000, 4);
-                        //obj.coords.lng = getRandomFloat(9.1500, 9.2500, 4);
-
                         return obj;
                     });
                 }
             });
+
+            const res = {
+                pins: result
+            };
             //displaying the json result
             var resultEle = document.getElementById("json-result");
-            resultEle.value = JSON.stringify(result, null, 4);
+            resultEle.value = JSON.stringify(res, null, 4);
             resultEle.style.display = "block";
         };
     } catch (e) {
