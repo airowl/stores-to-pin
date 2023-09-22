@@ -23,7 +23,6 @@ function excelFileToJSON(file) {
             const excel = XLSX.read(data, {
                 type: "binary",
                 cellDates: true,
-                cellTimes: true,
             });
             let result = {};
             excel.SheetNames.forEach(function (sheetName) {
@@ -54,20 +53,31 @@ function excelFileToJSON(file) {
                             obj.coords.lng = c[1];
                         }
 
-                        obj.where = where ?? "";
+                        const w = typeof where !== "undefined" ? where : "";
 
-                        const date = new Date(r.date);
-                        const d =
-                            date.getDate() +
-                            "-" +
-                            date.getMonth() +
-                            "-" +
-                            date.getFullYear();
-                        obj.date = d;
+                        obj.where = w;
 
-                        obj.time = time;
+                        const t =
+                            typeof time !== "undefined" ? ", " + time : ", ";
 
-                        obj.caption = where + ", " + d + ", " + time;
+                        obj.time = t;
+
+                        obj.caption = w + t;
+
+                        if (typeof r.date !== "undefined") {
+                            const date = new Date(r.date);
+                            const d =
+                                ", " +
+                                date.getDate() +
+                                "-" +
+                                date.getMonth() +
+                                "-" +
+                                date.getFullYear();
+                            obj.date = d;
+                            obj.caption = w + d + t;
+                        }
+
+                        console.log(r.date);
 
                         return obj;
                     });
@@ -75,7 +85,7 @@ function excelFileToJSON(file) {
             });
 
             const res = {
-                pins: result
+                pins: result,
             };
             //displaying the json result
             var resultEle = document.getElementById("json-result");
