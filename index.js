@@ -31,6 +31,7 @@ function excelFileToJSON(file) {
                 );
                 if (roa.length > 0) {
                     result = roa.map((r) => {
+                        console.log(r);
                         let { title, coords, where, time } = r;
 
                         let obj = {
@@ -53,31 +54,46 @@ function excelFileToJSON(file) {
                             obj.coords.lng = c[1];
                         }
 
-                        const w = typeof where !== "undefined" ? where : "";
+                        const w = where ?? "";
 
                         obj.where = w;
 
-                        const t =
-                            typeof time !== "undefined" ? ", " + time : ", ";
+                        const t = time ?? "";
 
                         obj.time = t;
 
                         obj.caption = w + t;
 
-                        if (typeof r.date !== "undefined") {
-                            const date = new Date(r.date);
-                            const d =
-                                ", " +
+                        let date = typeof r.date !== 'undefined' ? new Date(r.date) : '';
+
+                        if (date != '') {
+                            date =
                                 date.getDate() +
                                 "-" +
-                                date.getMonth() +
+                                (date.getMonth() + 1) +
                                 "-" +
                                 date.getFullYear();
-                            obj.date = d;
-                            obj.caption = w + d + t;
                         }
 
-                        console.log(r.date);
+                        obj.date = date;
+
+                        if (w == '' && t == '') {
+                            obj.caption = date;
+                        } else if (w == '' && date == '') {
+                            obj.caption = t;
+                        } else if (t == '' && date == '') {
+                            obj.caption = w;
+                        } else {
+                            if (w == '') {
+                                obj.caption = date + ', ' + t;
+                            } else if (t == '') {
+                                obj.caption = w + ', ' + date;
+                            } else if (date == '') {
+                                obj.caption = w + ', ' + t;
+                            } else {
+                                obj.caption = w + ', ' + date + ', ' + t;
+                            }
+                        }
 
                         return obj;
                     });
