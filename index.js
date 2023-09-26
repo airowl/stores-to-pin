@@ -4,8 +4,8 @@ function upload() {
         alert("Please choose any file...");
         return;
     }
-    var filename = files[0].name;
-    var extension = filename.substring(filename.lastIndexOf(".")).toUpperCase();
+    var filename = files[0].name; // store.xlsx
+    var extension = filename.substring(filename.lastIndexOf(".")).toUpperCase(); // .XLSX
     if (extension == ".XLS" || extension == ".XLSX") {
         excelFileToJSON(files[0]);
     } else {
@@ -50,8 +50,8 @@ function excelFileToJSON(file) {
 
                         if (typeof coords !== "undefined") {
                             const c = coords.split(",");
-                            obj.coords.lat = c[0];
-                            obj.coords.lng = c[1];
+                            obj.coords.lat = parseFloat(c[0].trim());
+                            obj.coords.lng = parseFloat(c[1].trim());
                         }
 
                         const w = where ?? "";
